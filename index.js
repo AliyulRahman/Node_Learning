@@ -1,11 +1,8 @@
-function greet(name, callback) {
-    console.log(`Hello, ${name}!`);
-    callback();
-}
+var http = require('http');
 
-function sayGoodbye() {
-    console.log("Goodbye!");
-}
+var server = http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World!');
+});
 
-// Calling function with a callback
-greet("Alice", sayGoodbye);
+server.listen(8080);
