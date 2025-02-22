@@ -9,7 +9,7 @@ function initUserDetails(name, callback) {
     var error = {}
     var respose = {
         "Id": 1,
-        "Address": "Pondicherry",
+        "Address": "Bahrain",
         "Phone": 36317294
     }
     callback(error,respose);
