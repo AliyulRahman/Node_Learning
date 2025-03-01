@@ -12,14 +12,8 @@ var server = http.createServer(function (req, res) {
   };
 
   handleRoutes(req, function (error, result) {
-    if (error) {
-      returnResponse = error
-      res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
-    } else {
-      returnResponse = result
-      res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
-    }
-
+    returnResponse = error ? error : result
+    res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
     res.write(returnResponse.content);
   });
 
