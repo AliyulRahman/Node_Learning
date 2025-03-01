@@ -1,8 +1,4 @@
 var http = require("http");
-const url = require("url");
-const { convertCase } = require("./libs/textTransform");
-const { getOSProperties } = require("./libs/osProperties");
-const { readFile } = require("./libs/fileReader");
 const { handleRoutes } = require("./Router/RouteHander");
 
 const port = 8000;
