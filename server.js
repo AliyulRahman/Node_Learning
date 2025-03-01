@@ -3,47 +3,30 @@ const url = require("url");
 const { convertCase } = require("./libs/textTransform");
 const { getOSProperties } = require("./libs/osProperties");
 const { readFile } = require("./libs/fileReader");
+const { handleRoutes } = require("./Router/RouteHander");
+
 const port = 8000;
 
 var server = http.createServer(function (req, res) {
-  res.writeHead(200, { "Content-Type": "text/plain" });
 
-  const parsedUrl = url.parse(req.url, true);
-  const queryParams = parsedUrl.query;
-  // Read file
-  if (parsedUrl.pathname == "/fileReader") {
-    const fileName = queryParams?.fileName;
-    readFile(fileName, function (error, result) {
-      if (error) {
-        res.write(error);
-      } else {
-        console.log(result);
-        res.write(result);
-      }
-    });
-  }
-  // Get OS details
-  else if (parsedUrl.pathname == "/os") {
-    const property = queryParams?.property;
+  var returnResponse = {
+    statusCode: 0,
+    contentType: "",
+    content: "",
+  };
 
-    getOSProperties(property, function (error, result) {
-      if (error) {
-        res.write(error);
-      } else res.write(`Your Machine's OS ${property} : ${result}`);
-    });
-    // Text Transform
-  } else if (parsedUrl.pathname == "/textTransform") {
-    const inputText = queryParams?.inputText;
-    const inputType = queryParams?.inputType;
+  handleRoutes(req, function (error, result) {
+    if (error) {
+      returnResponse = error
+      res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
+    } else {
+      returnResponse = result
+      res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
+    }
 
-    convertCase(inputText, inputType, function (error, result) {
-      if (error) {
-        res.write(error);
-      } else res.write(result);
-    });
-  } else {
-    res.write("Page Not Found");
-  }
+    res.write(returnResponse.content);
+  });
+
   res.end();
 });
 server.listen(port, function (error, response) {
