@@ -5,14 +5,8 @@ const port = 8000;
 
 var server = http.createServer(function (req, res) {
 
-  var returnResponse = {
-    statusCode: 0,
-    contentType: "",
-    content: "",
-  };
-
   handleRoutes(req, function (error, result) {
-    returnResponse = error ? error : result
+    var returnResponse = error ? error : result
     res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
     res.write(returnResponse.content);
   });
