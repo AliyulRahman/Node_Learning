@@ -1,18 +1,21 @@
-var http = require("http");
+const http = require("http");
 const { handleRoutes } = require("./Router/RouteHander");
 
 const port = 8000;
 
-var server = http.createServer(function (req, res) {
-
-  handleRoutes(req, function (error, result) {
-    var returnResponse = error ? error : result
-    res.writeHead(returnResponse.statusCode, { "Content-Type": returnResponse.contentType });
-    res.write(returnResponse.content);
-  });
-
-  res.end();
+const server = http.createServer(async (req, res) => {
+  try {
+    const result = await handleRoutes(req);
+    res.writeHead(result.statusCode, { "Content-Type": result.contentType });
+    res.write(result.content);
+  } catch (error) {
+    res.writeHead(error.statusCode || 500, { "Content-Type": error.contentType || "text/html" });
+    res.write(error.content || "Internal Server Error");
+  } finally {
+    res.end();
+  }
 });
-server.listen(port, function (error, response) {
-  console.log(`Your server has been started and your port number is ${port}`);
+
+server.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
