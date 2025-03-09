@@ -1,0 +1,83 @@
+db.employees.insertMany([
+    { "name": "Alice", "department": "IT", "salary": 60000, "remote": true, "joinedAt": new Date("2021-03-15") },
+    { "name": "Bob", "department": "HR", "salary": 50000, "remote": false, "joinedAt": new Date("2019-07-10") },
+    { "name": "Charlie", "department": "Finance", "salary": 70000, "remote": true, "joinedAt": new Date("2022-01-25") },
+    { "name": "David", "department": "IT", "salary": 80000, "remote": false, "joinedAt": new Date("2020-06-20"), "address": { "city": "New York", "zip": "10001" } },
+    { "name": "Emma", "department": "HR", "salary": 55000, "remote": true, "joinedAt": new Date("2018-12-05") },
+    { "name": "Sophia", "department": "Finance", "salary": 75000, "remote": false, "joinedAt": new Date("2017-09-12"), "address": { "city": "Chicago", "zip": "60601" } },
+    { "name": "Liam", "department": "IT", "salary": 90000, "remote": true, "joinedAt": new Date("2016-05-18"), "projects": [ { "name": "Project A", "deadline": "2024-06-01" }, { "name": "Project B", "deadline": "2024-12-15" } ] },
+    { "name": "Michael", "department": "HR", "salary": 48000, "remote": false, "joinedAt": new Date("2023-02-10") },
+    { "name": "Olivia", "department": "Finance", "salary": 68000, "remote": true, "joinedAt": new Date("2015-11-22") },
+    { "name": "Noah", "department": "IT", "salary": 95000, "remote": false, "joinedAt": new Date("2014-08-30"), "projects": [ { "name": "Project X", "deadline": "2025-03-20" } ] },
+    { "name": "Isabella", "department": "HR", "salary": 53000, "remote": false, "joinedAt": new Date("2022-04-15") },
+    { "name": "William", "department": "Finance", "salary": 72000, "remote": true, "joinedAt": new Date("2013-06-25") },
+    { "name": "James", "department": "IT", "salary": 88000, "remote": false, "joinedAt": new Date("2020-01-05") },
+    { "name": "Benjamin", "department": "HR", "salary": 54000, "remote": true, "joinedAt": new Date("2018-07-30") },
+    { "name": "Charlotte", "department": "Finance", "salary": 77000, "remote": false, "joinedAt": new Date("2016-02-14"), "address": { "city": "Los Angeles", "zip": "90001" } }
+]);
+
+
+// find employees who are in the "IT" department AND either have a salary greater than $80,000 OR are working on "Project B"
+db.employees.find({
+    "$and": [
+        { "department": "IT" },
+        {
+            "$or": [
+                { "salary": { "$gt": 80000 } },
+                { "projects.name": "Project B" }
+            ]
+        }
+    ]
+});
+
+//Find employees who are either in the "IT" department OR working on "Project A":
+db.employees.find({
+    "$or": [
+        { "department": "IT" },
+        { "projects.name": "Project A" }
+    ]
+});
+
+//Find employees who are working remotely AND working on "Project A"
+db.employees.find({
+    "$and": [
+        { "remote": true },
+        { "projects.name": "Project A" }
+    ]
+});
+
+//Find employees who are in the "IT" department AND have a salary greater than $80,000:
+db.employees.find({
+    "$and": [
+        { "department": "IT" },
+        { "salary": { "$gt": 80000 } }
+    ]
+});
+
+//Find Employees Who Have at Least One Project
+db.employees.find({
+    "projects": { "$exists": true, "$not": { "$size": 0 } }
+});
+
+//Find employees who are working on both "Project A" and "Project B":
+db.employees.find({
+    "projects.name": { "$all": ["Project A", "Project B"] }
+});
+
+//Find Employees in Either New York OR Chicago
+db.employees.find({
+    "$or": [
+        { "address.city": "New York" },
+        { "address.city": "Chicago" }
+    ]
+});
+
+//Find Employees with a ZIP Code Starting with "90"
+
+db.employees.find({ "address.zip": { "$regex": "^90" } });
+
+//Delete the employee with the name "Alice":
+db.employees.deleteOne({ "name": "Alice" });
+
+//Delete all employees in the "HR" department:
+db.employees.deleteMany({ "department": "HR" });

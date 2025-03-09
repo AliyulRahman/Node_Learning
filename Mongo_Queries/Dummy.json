@@ -1,0 +1,39 @@
+mongosh "mongodb+srv://cluster0.wmwni.mongodb.net/" --apiVersion 1 --username admin
+
+db.Courses.insertOne({
+  id: 1,
+  name: "Node JS",
+  fees: 15000,
+  topicsCovered: ["Core NodeJs", "MongoDB"]
+})
+
+
+db.Courses.insertMany([
+    {
+    id: 2,
+    name: "React JS",
+    fees: 10000,
+    topicsCovered: ["HTML", "CSS"]
+  },
+  {
+    id: 3,
+    name: "Dot Net",
+    fees: 10000,
+    topicsCovered: ["C#","Web Api"]
+  }
+])
+
+db.Courses.find( {id: 2} )
+
+db.Courses.find({id: 3}, {name: 1, topicsCovered: 1})
+
+db.Courses.find({}, {_id:0})
+
+db.courses.find(
+  {
+    CourseName: {
+      $regex: /java/,
+      $options: 'i'
+    }
+  }
+)
