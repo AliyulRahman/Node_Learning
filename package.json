@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/AliyulRahman/Node_Learning/issues"
   },
-  "homepage": "https://github.com/AliyulRahman/Node_Learning#readme"
+  "homepage": "https://github.com/AliyulRahman/Node_Learning#readme",
+  "dependencies": {
+    "mongodb": "^6.15.0"
+  }
 }
