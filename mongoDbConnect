@@ -1,0 +1,100 @@
+const { MongoClient } = require("mongodb");
+
+// MongoDB Connection URI
+const uri = "mongodb://localhost:27017"; // Change if needed
+const client = new MongoClient(uri);
+
+// Database & Collection Names
+const dbName = "CompanyDB";
+const collectionName = "employees";
+
+async function runDB() {
+    try {
+        // Connect to MongoDB
+        await client.connect();
+        console.log("Connected to MongoDB");
+
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+
+        // Insert Data
+        try {
+            const insertResult = await collection.insertMany([
+                { name: "Alice", department: "IT", salary: 60000 },
+                { name: "Bob", department: "HR", salary: 50000 },
+                { name: "Charlie", department: "Finance", salary: 70000 }
+            ]);
+            console.log(" Data inserted:", insertResult.insertedCount);
+        } catch (error) {
+            console.error("Insert Error:", error);
+        }
+
+        // Find All Data
+        try {
+            const employees = await collection.find().toArray();
+            console.log("All Employees:", employees);
+        } catch (error) {
+            console.error("Find Error:", error);
+        }
+
+        // Query Data (Find employees in IT department)
+        try {
+            const itEmployees = await collection.find({ department: "IT" }).toArray();
+            console.log(" IT Employees:", itEmployees);
+        } catch (error) {
+            console.error(" Query Error:", error);
+        }
+
+        // Sort Data (Sort by salary descending)
+        try {
+            const sortedEmployees = await collection.find().sort({ salary: -1 }).toArray();
+            console.log(" Employees sorted by salary:", sortedEmployees);
+        } catch (error) {
+            console.error("Sort Error:", error);
+        }
+
+        //  Update Data (Increase Bob's salary by $5000)
+        try {
+            const updateResult = await collection.updateOne(
+                { name: "Bob" },
+                { $inc: { salary: 5000 } }
+            );
+            console.log(" Bob's salary updated:", updateResult.modifiedCount);
+        } catch (error) {
+            console.error(" Update Error:", error);
+        }
+
+        //  Limit Data (Get only first 2 employees)
+        try {
+            const limitedEmployees = await collection.find().limit(2).toArray();
+            console.log(" First 2 Employees:", limitedEmployees);
+        } catch (error) {
+            console.error(" Limit Error:", error);
+        }
+
+        //  Delete Data (Remove Charlie)
+        try {
+            const deleteResult = await collection.deleteOne({ name: "Charlie" });
+            console.log(" Charlie deleted:", deleteResult.deletedCount);
+        } catch (error) {
+            console.error(" Delete Error:", error);
+        }
+
+        //  Drop Collection
+        try {
+            await collection.drop();
+            console.log(" Collection dropped");
+        } catch (error) {
+            console.error(" Drop Error:", error);
+        }
+    } catch (error) {
+        console.error(" Database Connection Error:", error);
+    } finally {
+        // Close Connection
+        await client.close();
+        console.log(" Disconnected from MongoDB");
+    }
+}
+
+// Run the function
+runDB();
