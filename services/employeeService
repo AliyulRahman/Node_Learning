@@ -1,0 +1,80 @@
+const { MongoClient } = require("mongodb");
+
+const uri = "mongodb://localhost:27017"; // MongoDB Connection URI
+const client = new MongoClient(uri);
+const dbName = "CompanyDB";
+const collectionName = "employees";
+
+async function connect() {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        return client.db(dbName).collection(collectionName);
+    } catch (error) {
+        console.error("Database Connection Error:", error);
+        throw error;
+    }
+}
+
+// Insert multiple employees
+async function insertEmployees(data) {
+    try {
+        const collection = await connect();
+        const result = await collection.insertMany(data);
+        return { insertedCount: result.insertedCount };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Get employees (optional query)
+async function getEmployees(query = {}) {
+    try {
+        const collection = await connect();
+        return await collection.find(query).toArray();
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Update a single employee
+async function updateEmployee(filter, update) {
+    try {
+        const collection = await connect();
+        const result = await collection.updateOne(filter, update);
+        return { modifiedCount: result.modifiedCount };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Delete a single employee
+async function deleteEmployee(filter) {
+    try {
+        const collection = await connect();
+        const result = await collection.deleteOne(filter);
+        return { deletedCount: result.deletedCount };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Drop the entire collection
+async function dropCollection() {
+    try {
+        const collection = await connect();
+        await collection.drop();
+        return { message: "Collection dropped" };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Export functions
+module.exports = {
+    insertEmployees,
+    getEmployees,
+    updateEmployee,
+    deleteEmployee,
+    dropCollection
+};
